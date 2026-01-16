@@ -4,7 +4,7 @@
 /css/* /css/:splat 200  
 /js/* /js/:splat 200
 
-# Handle HTML files secara spesifik
+# Handle HTML files secara spesifik - URUTAN PENTING!
 /cara-pemesanan.html /cara-pemesanan.html 200
 /pengiriman.html /pengiriman.html 200
 /garansi.html /garansi.html 200
