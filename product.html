@@ -406,35 +406,14 @@
                 `;
             }
 
-            // Share Function
-            window.shareCurrentProduct = async function() {
-                const imageUrl = encodeURI(images[0]);
-                const message = `Halo Manor Mebel, saya tertarik dengan produk ini:\n\nNama: ${product.name}`;
-                const waText = encodeURIComponent(message + '\nLink Gambar: ' + imageUrl);
-                const waDeep = `whatsapp://send?phone=6281325393894&text=${waText}`;
+            // Share Function - INSTANT WhatsApp Redirect with Product Link
+            window.shareCurrentProduct = function() {
+                const message = `Halo Manor Mebel, saya tertarik dengan produk ini:\n\nNama Produk: ${product.name}\nKategori: ${product.category}\nLink Produk: https://manormebel.com/product.html?id=${product.id}`;
+                const waText = encodeURIComponent(message);
                 const waWeb = `https://wa.me/6281325393894?text=${waText}`;
 
-                try {
-                     if (navigator.share) {
-                        const response = await fetch(imageUrl);
-                        const blob = await response.blob();
-                        const file = new File([blob], `${product.name.replace(/[^a-zA-Z0-9]/g, '_')}.jpg`, { type: blob.type });
-
-                        if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                            await navigator.share({
-                                files: [file],
-                                text: message
-                            });
-                            return;
-                        }
-                    }
-                } catch (error) {
-                    console.log("Share failed:", error);
-                }
-                window.location.href = waDeep;
-                setTimeout(() => {
-                    window.location.href = waWeb;
-                }, 600);
+                // INSTANT redirect to WhatsApp Web (works on all devices)
+                window.location.href = waWeb;
             };
 
             container.innerHTML = `
