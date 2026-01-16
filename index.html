@@ -2055,5 +2055,41 @@
             }
         }
     </script>
+    
+    <!-- Scroll Position Restoration for Footer Links -->
+    <script>
+        // Save scroll position when clicking footer links
+        document.addEventListener('click', function(e) {
+            const footerLink = e.target.closest('a[href="/cara-pemesanan.html"], a[href="/pengiriman.html"], a[href="/garansi.html"], a[href="/tentang-kami.html"]');
+            if (footerLink) {
+                sessionStorage.setItem('footerScrollPosition', window.scrollY);
+                sessionStorage.setItem('fromFooterLink', 'true');
+            }
+        });
+        
+        // Restore scroll position when returning from footer pages
+        window.addEventListener('pageshow', function(e) {
+            if (e.persisted && sessionStorage.getItem('fromFooterLink') === 'true') {
+                const savedPosition = sessionStorage.getItem('footerScrollPosition');
+                if (savedPosition) {
+                    setTimeout(function() {
+                        window.scrollTo(0, parseInt(savedPosition));
+                        sessionStorage.removeItem('fromFooterLink');
+                    }, 0);
+                }
+            }
+        });
+        
+        // Handle initial page load (back button from other pages)
+        if (sessionStorage.getItem('fromFooterLink') === 'true') {
+            const savedPosition = sessionStorage.getItem('footerScrollPosition');
+            if (savedPosition) {
+                setTimeout(function() {
+                    window.scrollTo(0, parseInt(savedPosition));
+                    sessionStorage.removeItem('fromFooterLink');
+                }, 0);
+            }
+        }
+    </script>
 </body>
 </html>
