@@ -45,6 +45,11 @@ self.addEventListener('fetch', (event) => {
   // Skip cross-origin requests (like analytics, cdns) for now, or cache them if needed.
   // We will cache CDN requests (runtime caching) to speed up subsequent loads.
   
+  // CRITICAL FIX: Skip HTML navigation requests to prevent ERR_FAILED
+  if (event.request.destination === 'document' || event.request.url.endsWith('.html')) {
+    return;
+  }
+  
   event.respondWith(
     caches.match(event.request)
       .then((cachedResponse) => {
