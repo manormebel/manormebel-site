@@ -174,7 +174,6 @@
         // Check if Tailwind loaded successfully
         window.addEventListener('load', function() {
             if (typeof tailwind === 'undefined') {
-                console.warn('Tailwind CDN failed to load, using local CSS only');
                 // Add fallback classes for critical elements
                 document.documentElement.classList.add('tailwind-fallback');
             }
@@ -183,7 +182,6 @@
         // Set timeout for fallback
         setTimeout(function() {
             if (typeof tailwind === 'undefined') {
-                console.warn('Tailwind CDN timeout, using local CSS');
                 document.documentElement.classList.add('tailwind-fallback');
             }
         }, 3000);
@@ -199,7 +197,49 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Merriweather:ital,wght@0,300;0,400;0,700;1,400&family=UnifrakturMaguntia&display=swap" rel="stylesheet">
     
+    <!-- Critical Font Fallback -->
+    <style>
+        /* Critical font fallback untuk menghindari CLS */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        }
+        .font-serif {
+            font-family: Georgia, 'Times New Roman', serif;
+        }
+        .font-gothic {
+            font-family: 'Times New Roman', serif;
+        }
+        /* Apply Google Fonts setelah load */
+        .fonts-loaded body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        .fonts-loaded .font-serif {
+            font-family: 'Merriweather', Georgia, serif;
+        }
+        .fonts-loaded .font-gothic {
+            font-family: 'UnifrakturMaguntia', cursive;
+        }
+    </style>
+    
     <!-- Critical CSS for Hero Anti-Flash -->
+    
+    <!-- Font Loading Optimization -->
+    <script>
+        // Apply fonts after load to prevent CLS
+        function applyFonts() {
+            document.documentElement.classList.add('fonts-loaded');
+        }
+        
+        // Apply fonts immediately if already loaded, otherwise on load
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', applyFonts);
+        } else {
+            applyFonts();
+        }
+        
+        // Fallback: apply fonts after 3 seconds max
+        setTimeout(applyFonts, 3000);
+    </script>
     
     <!-- SEO Hidden Text - Google Friendly -->
     <style>
@@ -221,75 +261,40 @@
         }
     </style>
     <style>
-        /* Hero Anti-Flash Protection */
+        /* Hero Optimized - No Anti-Flash */
         .hero-section {
-            position: relative !important;
-            height: 600px !important;
-            background-color: #1c1917 !important;
-            overflow: hidden !important;
-            contain: layout style paint !important;
-            visibility: hidden !important; /* Hidden initially */
-            opacity: 0 !important;
-        }
-        
-        .hero-section.hero-ready {
-            visibility: visible !important;
-            opacity: 1 !important;
+            position: relative;
+            height: 600px;
+            background-color: #1c1917;
+            overflow: hidden;
+            contain: layout style paint;
         }
         
         .hero-section * {
-            contain: layout style paint !important;
+            contain: layout style paint;
         }
         
         .hero-section img {
-            position: absolute !important;
-            top: 0 !important;
-            left: 0 !important;
-            width: 100% !important;
-            height: 100% !important;
-            object-fit: cover !important;
-            object-position: center 45% !important;
-            opacity: 1 !important;
-            visibility: visible !important;
-            transform: none !important;
-            animation: none !important;
-            transition: none !important;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center 45%;
+            content-visibility: auto;
         }
         
-        /* Force hero content visible immediately */
         .hero-content {
-            position: relative !important;
-            z-index: 10 !important;
-            opacity: 1 !important;
-            visibility: visible !important;
-            transform: none !important;
-            animation: none !important;
-        }
-        
-        /* Prevent any layout shift */
-        .hero-text {
-            opacity: 1 !important;
-            visibility: visible !important;
-            transform: none !important;
-            animation: none !important;
-        }
-        
-        /* Ensure proper image loading without flash */
-        .hero-section img[src*="hero"] {
-            will-change: auto !important;
-            backface-visibility: hidden !important;
-            -webkit-backface-visibility: hidden !important;
+            position: relative;
+            z-index: 10;
         }
     </style>
     
-    <!-- Hero Anti-Flash Control Script -->
+    <!-- Hero Optimized Loading Script -->
     <script>
-        // Prevent hero flash by controlling visibility
+        // Optimasi LCP: Hero langsung visible tanpa delay
         (function() {
-            // Hide hero immediately on page start
-            document.documentElement.style.setProperty('--hero-visibility', 'hidden');
-            
-            // Function to show hero when ready
             // Global error listener for image fallbacks
             document.addEventListener('error', function(e) {
                 if (e.target.dataset.error === 'fallback-image') {
@@ -297,29 +302,10 @@
                 }
             }, true);
             
-            function showHero() {
-                const heroSection = document.querySelector('.hero-section');
-                if (heroSection) {
-                    heroSection.classList.add('hero-ready');
-                }
-            }
-            
-            // Show hero after critical resources loaded
-            if (document.readyState === 'loading') {
-                document.addEventListener('DOMContentLoaded', function() {
-                    showHero();
-                });
-            } else {
-                // DOM already loaded
-                showHero();
-            }
-            
-            // Show hero when hero image loaded
+            // Preload hero image untuk LCP optimization
             const heroImg = new Image();
             heroImg.src = '/images/hero/family.jpg';
-            heroImg.onload = function() {
-                setTimeout(showHero, 10);
-            };
+            heroImg.fetchpriority = 'high';
         })();
     </script>
     
@@ -381,8 +367,8 @@
                 </div>
 
                 <div class="flex items-center space-x-4 relative">
-                    <div id="search-container" class="hidden absolute right-0 top-full mt-2 w-72 bg-white dark:bg-stone-800 shadow-lg rounded-lg p-3 border border-stone-100 dark:border-stone-700 z-50" onmouseleave="hideSearchIfEmpty()">
-                        <input type="text" id="search-input" placeholder="Cari furniture..." class="w-full px-4 py-2 rounded-md border border-stone-200 dark:border-stone-600 dark:bg-stone-700 dark:text-stone-100 focus:outline-none focus:border-wood-dark text-sm" onkeyup="searchProducts(this.value)">
+                    <div id="search-container" class="hidden absolute right-0 top-full mt-2 w-72 bg-white dark:bg-stone-800 shadow-lg rounded-lg p-3 border border-stone-100 dark:border-stone-700 z-50">
+                        <input type="text" id="search-input" placeholder="Cari furniture..." class="w-full px-4 py-2 rounded-md border border-stone-200 dark:border-stone-600 dark:bg-stone-700 dark:text-stone-100 focus:outline-none focus:border-wood-dark text-sm">
                     </div>
                     <button id="search-toggle-btn" class="text-stone-500 hover:text-wood-dark dark:text-stone-400 dark:hover:text-wood-light transition-colors">
                         <i data-lucide="search" class="w-6 h-6"></i>
@@ -479,7 +465,7 @@
     <!-- Hero Section -->
     <div class="hero-section relative bg-stone-900 h-[600px] flex items-center">
         <div class="absolute inset-0 overflow-hidden">
-            <img src="/images/hero/family.jpg" alt="Keluarga di ruang tamu dengan furnitur Manor Mebel" width="1920" height="600" class="w-full h-full object-cover object-[center_45%]">
+            <img src="/images/hero/family.jpg" alt="Keluarga di ruang tamu dengan furnitur Manor Mebel" width="1920" height="600" class="w-full h-full object-cover object-[center_45%]" style="width: 100%; height: 100%;">
             <!-- Gradient: Darker at bottom for text, clear at top for image -->
             <div class="absolute inset-0 bg-gradient-to-t from-stone-900/90 via-stone-900/40 to-transparent"></div>
         </div>
@@ -580,7 +566,7 @@
     </section>
 
     <!-- Footer -->
-    <footer class="bg-stone-900 text-stone-300">
+    <footer class="bg-stone-900 text-stone-300 min-h-[400px]">
         <div class="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
                 <div class="flex flex-col items-center">
@@ -637,12 +623,12 @@
                     </a>
                 </div>
                 <p class="text-xs text-stone-500 tracking-wide">&copy;2026 Manor Mebel. All rights reserved.</p>
-                <p class="text-xs text-stone-400 mt-4 max-w-2xl mx-auto leading-relaxed seo-hidden-text" data-footer-description-id="Toko mebel Jepara Jawa Tengah Indonesia yang menyediakan furniture kayu jati berkualitas dengan harga termurah. Produk meliputi sofa, kursi tamu, meja makan, tempat tidur, lemari, meja TV, furniture outdoor, dan custom furniture. Melayani Jepara, seluruh Indonesia, hingga pasar internasional dan ekspor furniture.">
+                <div class="seo-hidden-text" style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;" data-footer-description-id="Toko mebel Jepara Jawa Tengah Indonesia yang menyediakan furniture kayu jati berkualitas dengan harga termurah. Produk meliputi sofa, kursi tamu, meja makan, tempat tidur, lemari, meja TV, furniture outdoor, dan custom furniture. Melayani Jepara, seluruh Indonesia, hingga pasar internasional dan ekspor furniture.">
                     Toko mebel Jepara Jawa Tengah Indonesia yang menyediakan furniture kayu jati berkualitas dengan harga termurah. Produk meliputi sofa, kursi tamu, meja makan, tempat tidur, lemari, meja TV, furniture outdoor, dan custom furniture. Melayani Jepara, seluruh Indonesia, hingga pasar internasional dan ekspor furniture.
-                </p>
-                <p class="text-xs text-stone-400 mt-2 max-w-2xl mx-auto leading-relaxed seo-hidden-text" data-footer-description-en="We are a Jepara furniture manufacturer from Indonesia, providing quality teak wood furniture, custom furniture, and export services for international markets.">
+                </div>
+                <div class="seo-hidden-text" style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;" data-footer-description-en="We are a Jepara furniture manufacturer from Indonesia, providing quality teak wood furniture, custom furniture, and export services for international markets.">
                     We are a Jepara furniture manufacturer from Indonesia, providing quality teak wood furniture, custom furniture, and export services for international markets.
-                </p>
+                </div>
             </div>
         </div>
     </footer>
@@ -793,7 +779,6 @@
             renderPagination(totalPages);
             
             lucide.createIcons();
-            console.log('=== updateKategoriLabel END ===');
         }
 
         function renderPagination(totalPages) {
@@ -988,58 +973,53 @@
         }
 
         function toggleMegaMenu(e) {
-            console.log('🔄 toggleMegaMenu called with event:', e);
-            console.log('🎯 Event target:', e.target);
-            console.log('🎯 Event target class:', e.target.className);
-            
-            // Check if the click originated from the reset icon wrapper
+            // Quick sync check untuk X icon
             if (e && e.target && e.target.closest('.js-reset-mega-menu')) {
-                console.log('🎯 X icon detected in toggleMegaMenu - triggering reset!');
                 e.preventDefault();
                 e.stopPropagation();
                 resetMegaMenu();
                 return;
             }
 
-            const menu = document.getElementById('mega-menu');
-            const isHidden = menu.classList.contains('hidden');
-            const megaBtn = document.getElementById('mega-menu-btn');
-            const allBtn = document.querySelector('button[data-category="All"]');
-            const latestBtn = document.querySelector('button[data-category="Latest"]');
-            const customBtn = document.querySelector('button[data-category="Request Design"]');
-            
-            if (isHidden) {
-                menu.classList.remove('hidden');
+            // Async processing untuk reduce INP
+            requestIdleCallback(() => {
+                const menu = document.getElementById('mega-menu');
+                const isHidden = menu.classList.contains('hidden');
+                const megaBtn = document.getElementById('mega-menu-btn');
                 
-                // Visual Update: Activate Mega Menu Button, Deactivate Others
-                setSingleActiveButton(megaBtn, 'mega');
-
-                tempSelectedCategory = null; // Reset selection
-                updateSelectButtonState(); // Update select button
-                isCategoryLocked = false; // Reset lock state
-                
-                // UPDATE CHEVRON TO UP STATE
-                updateKategoriButton('open', 'Kategori Produk');
-                
-                if (!isMegaMenuRendered) {
-                    renderMegaMenuStructure();
-                    isMegaMenuRendered = true;
-                }
-                
-                if (!activeMainCategory) {
-                    updateCategoryView(megaMenuCategories[0].id);
+                if (isHidden) {
+                    // Show menu - batch DOM updates
+                    menu.classList.remove('hidden');
+                    setSingleActiveButton(megaBtn, 'mega');
+                    
+                    // Defer heavy operations
+                    setTimeout(() => {
+                        tempSelectedCategory = null;
+                        updateSelectButtonState();
+                        isCategoryLocked = false;
+                        updateKategoriButton('open', 'Kategori Produk');
+                        
+                        if (!isMegaMenuRendered) {
+                            renderMegaMenuStructure();
+                            isMegaMenuRendered = true;
+                        }
+                        
+                        if (!activeMainCategory) {
+                            updateCategoryView(megaMenuCategories[0].id);
+                        } else {
+                            updateCategoryView(activeMainCategory);
+                        }
+                    }, 0);
+                    
                 } else {
-                    updateCategoryView(activeMainCategory);
+                    // Hide menu - simple operation
+                    menu.classList.add('hidden');
+                    const btnText = megaBtn.querySelector('span').textContent.trim();
+                    if (btnText === 'Kategori Produk') {
+                        updateKategoriButton('default', 'Kategori Produk');
+                    }
                 }
-            } else {
-                menu.classList.add('hidden');
-                
-                // UPDATE CHEVRON TO DOWN STATE (menu closed)
-                const btnText = megaBtn.querySelector('span').textContent.trim();
-                if (btnText === 'Kategori Produk') {
-                    updateKategoriButton('default', 'Kategori Produk');
-                }
-            }
+            }, { timeout: 50 });
         }
 
         function renderMegaMenuStructure() {
@@ -1066,7 +1046,7 @@
                 
                 // Use event delegation instead of inline onclick
                 button.addEventListener('click', () => handleCategoryClick(cat.id));
-                button.addEventListener('mouseenter', () => handleCategoryHover(cat.id));
+                button.addEventListener('mouseenter', () => handleCategoryHover(cat.id), { passive: true });
                 
                 categoryItem.appendChild(button);
                 leftList.appendChild(categoryItem);
@@ -1166,8 +1146,6 @@
         }
 
         function selectSubCategory(value, label, btn) {
-            console.log('=== selectSubCategory START ===');
-            console.log('value:', value, 'label:', label);
             tempSelectedCategory = { value, label };
             
             // SAVE STATE TO localStorage - CRITICAL FOR REFRESH CONSISTENCY
@@ -1176,10 +1154,7 @@
             updateSelectButtonState(); // Update select button
             
             // Use unified render function for consistent UI
-            console.log('Calling renderActiveCategory with:', label);
             updateKategoriButton('selected', label);
-            console.log('=== selectSubCategory END ===');
-            console.log('selectSubCategory called with label:', label); // Debug log
             
             // Sync all buttons with same name (both mobile and desktop)
             const allBtns = document.querySelectorAll('.subcategory-btn');
@@ -1208,7 +1183,6 @@
         }
 
         function resetMegaMenu() {
-            console.log('🔄 resetMegaMenu() called');
             // CLEAR SAVED STATE FROM localStorage
             localStorage.removeItem('selectedSubCategory');
             
@@ -1278,10 +1252,6 @@
 
         function applyMegaMenuSelection() {
             if (tempSelectedCategory) {
-                console.log('=== applyMegaMenuSelection START ===');
-                console.log('tempSelectedCategory:', tempSelectedCategory);
-                
-                console.log('About to call renderActiveCategory with:', tempSelectedCategory.label);
                 // Use unified render function for consistent UI
                 updateKategoriButton('selected', tempSelectedCategory.label);
                 
@@ -1389,13 +1359,11 @@
         function filterProducts(category) {
             // SKIP jika masih inisialisasi atau state terkunci
             if (activeFilterState.isInitializing) {
-                console.log('Skipping filterProducts during initialization');
                 return;
             }
             
             // RESET SUBCATEGORY STATE when clicking top-level buttons (All, Latest, Request Design)
             if (category === 'All' || category === 'Latest' || category === 'Request Design') {
-                console.log('🔄 RESET: Clearing subcategory state for top-level button');
                 
                 // 1. Clear active subcategory state
                 tempSelectedCategory = null;
@@ -1510,18 +1478,27 @@
             }
         }
 
+        // Debounce function untuk optimasi INP
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
         // Search Logic
         function searchProducts(query) {
-            console.log('=== searchProducts START ===');
-            console.log('query:', query);
-            console.trace('searchProducts called from:');
-            
             const grid = document.getElementById('product-grid');
             const lowerQuery = query.toLowerCase();
             
             // Removed auto-scroll to catalog when typing starts
 
-            // Filter products by query (Keyword matching)
+            // Filter products by query (Keyword matching) - optimasi
             const filtered = products.filter(p => 
                 p.name.toLowerCase().includes(lowerQuery) || 
                 p.desc.toLowerCase().includes(lowerQuery) ||
@@ -1529,43 +1506,51 @@
                 (p.keywords && p.keywords.some(k => k.toLowerCase().includes(lowerQuery)))
             );
             
-            // Update UI
-            const paginationContainer = document.getElementById('pagination-container');
-            if (query.trim() === '') {
-                renderProducts('All');
-                return;
-            }
+            // Update UI dengan requestIdleCallback untuk reduce INP
+            requestIdleCallback(() => {
+                const paginationContainer = document.getElementById('pagination-container');
+                if (query.trim() === '') {
+                    renderProducts('All');
+                    return;
+                }
 
-            // Hide pagination during search
-            if (paginationContainer) DOMUtils.safeSetHTML(paginationContainer, '');
+                // Hide pagination during search
+                if (paginationContainer) DOMUtils.safeSetHTML(paginationContainer, '');
 
-            // Use safe DOM manipulation for search results
-            grid.innerHTML = '';
-            
-            if (filtered.length === 0) {
-                const noResults = document.createElement('div');
-                noResults.className = 'col-span-full text-center text-stone-500 py-10';
-                noResults.textContent = `Tidak ada produk yang cocok dengan "${query}"`;
-                grid.appendChild(noResults);
-            } else {
-                filtered.forEach((product, index) => {
-                    const cardElement = document.createElement('div');
-                    cardElement.className = 'product-card';
-                    DOMUtils.safeSetHTML(cardElement, createProductCard(product, index));
-                    grid.appendChild(cardElement);
-                });
-            }
-            lucide.createIcons();
-            
-            // Show search results by ensuring grid is visible
-            const catalogSection = document.getElementById('catalog-section');
-            if (catalogSection && catalogSection.classList.contains('hidden')) {
-                catalogSection.classList.remove('hidden');
-            }
+                // Use DocumentFragment untuk better performance
+                const fragment = document.createDocumentFragment();
+                
+                if (filtered.length === 0) {
+                    const noResults = document.createElement('div');
+                    noResults.className = 'col-span-full text-center text-stone-500 py-10';
+                    noResults.textContent = `Tidak ada produk yang cocok dengan "${query}"`;
+                    fragment.appendChild(noResults);
+                } else {
+                    // Batch create elements untuk reduce reflow
+                    filtered.forEach((product, index) => {
+                        const cardElement = document.createElement('div');
+                        cardElement.className = 'product-card';
+                        DOMUtils.safeSetHTML(cardElement, createProductCard(product, index));
+                        fragment.appendChild(cardElement);
+                    });
+                }
+                
+                // Single DOM update untuk mencegah multiple reflows
+                grid.innerHTML = '';
+                grid.appendChild(fragment);
+                
+                // Update icons in batch
+                lucide.createIcons();
+                
+                // Show search results by ensuring grid is visible
+                const catalogSection = document.getElementById('catalog-section');
+                if (catalogSection && catalogSection.classList.contains('hidden')) {
+                    catalogSection.classList.remove('hidden');
+                }
+            }, { timeout: 50 });
             
             // Reset filter buttons style to indicate search mode
             const resetBtnForSearchMode = (btn) => {
-                console.log('resetBtnForSearchMode called for button:', btn?.id || btn?.getAttribute('data-category'));
                 if(btn) {
                     btn.classList.remove('bg-wood-dark', 'text-white', 'shadow-md', 'border-orange-500', 'text-orange-600', 'ring-2', 'ring-orange-100');
                     btn.classList.add('bg-stone-50', 'text-stone-700', 'border', 'border-stone-200', 'hover:border-wood-medium', 'hover:text-wood-dark', 'dark:bg-stone-800', 'dark:text-stone-300', 'dark:border-stone-700', 'dark:hover:border-wood-light', 'dark:hover:text-wood-light');
@@ -1691,9 +1676,6 @@
                     setButtonActive(allBtn, false);
                     setButtonActive(customBtn, false);
                     setButtonActive(latestBtn, false);
-                    
-                    console.log('🎨 Used unified renderActiveCategory for:', foundSubcategory.name);
-                    console.log('🎨 Mega button structure after unified render:', Array.from(megaBtn.children).map(child => child.tagName + '.' + child.className));
                 }
             }
         }, 100); // Small delay to ensure DOM is ready
@@ -1745,7 +1727,7 @@
                         updateKategoriButton('selected', parsed.label);
                     }
                 } catch (e) {
-                    console.warn('Failed to parse saved subcategory:', e);
+                    // Silent fail for production
                 }
             }
             
@@ -1768,9 +1750,9 @@
                             ACTIVE_FILTER = 'mega';
                             updateKategoriButton('selected', parsed.label);
                         }
-                    } catch (e) {
-                        console.warn('Failed to parse saved subcategory on load:', e);
-                    }
+                } catch (e) {
+                    // Silent fail for production
+                }
                 }
             }
             
@@ -1817,24 +1799,19 @@
                         if (iconX && kategoriLabel) {
                             iconX.classList.remove('hidden');
                             kategoriLabel.textContent = parsed.label;
-                            console.log('✅ FINAL CHECK: X shown, label updated to:', parsed.label);
                         }
                     }
                 } catch (e) {
-                    console.warn('Final check failed:', e);
+                    // Silent fail for production
                 }
             }
             
             // Setup proper event listener for mega menu X icon click
-            console.log('🔧 Setting up event listeners for mega button:', megaBtnEventListener);
-            
             if (history.scrollRestoration) {
-                history.scrollRestoration = 'auto';
+                history.scrollRestoration = 'manual';
             }
             
             if (megaBtnEventListener) {
-                // Log initial state
-                console.log('🔧 Initial button children:', Array.from(megaBtnEventListener.children).map(child => child.tagName + '.' + child.className));
                 
                 // Setup mutation observer to detect lucide icon changes
                 const observer = new MutationObserver(function(mutations) {
@@ -1842,16 +1819,12 @@
                         if (mutation.type === 'childList') {
                             mutation.addedNodes.forEach(function(node) {
                                 if (node.nodeType === 1 && (node.tagName === 'svg' || node.tagName === 'path')) {
-                                    console.log('🔄 Lucide icon change detected:', node.tagName);
-                                    
                                     // Re-attach event listeners for new icons
                                     setTimeout(() => {
                                         // Check for new X icon
                                         const newXicon = megaBtn.querySelector('[data-lucide="x"], svg[data-lucide="x"]');
                                         if (newXicon) {
-                                            console.log('🔄 Re-attaching to new X icon after lucide change');
                                             newXicon.addEventListener('click', function(e) {
-                                                console.log('🎯 X icon clicked after lucide change!');
                                                 e.preventDefault();
                                                 e.stopPropagation();
                                                 resetMegaMenu();
@@ -1870,12 +1843,8 @@
                     subtree: true
                 });
                 
-                console.log('🔧 Mutation observer started for lucide icon changes');
-                
                 // MAIN event listener - comprehensive click detection
                 megaBtn.addEventListener('click', function(e) {
-                    console.log('🖱️ Click detected on mega button!');
-                    
                     // DETECT X ICON CLICKS - Priority 1
                     const isXicon = (
                         e.target.closest('.js-reset-mega-menu') ||
@@ -1886,7 +1855,6 @@
                     );
                     
                     if (isXicon) {
-                        console.log('🎯 X ICON DETECTED - Resetting mega menu!');
                         e.preventDefault();
                         e.stopPropagation();
                         resetMegaMenu();
@@ -1894,7 +1862,6 @@
                     }
                     
                     // Regular button click - open menu
-                    console.log('🔄 Regular mega menu click - opening menu');
                     toggleMegaMenu(e);
                 });
             }
@@ -1908,13 +1875,27 @@
                 searchToggleBtn.addEventListener('click', toggleSearch);
             }
             
-            // Filter buttons
+            // Search input dengan debounce
+            const searchInput = document.getElementById('search-input');
+            if (searchInput) {
+                searchInput.addEventListener('input', debounce((e) => {
+                    searchProducts(e.target.value);
+                }, 300));
+            }
+            
+            // Search container mouseleave dengan passive listener
+            const searchContainer = document.getElementById('search-container');
+            if (searchContainer) {
+                searchContainer.addEventListener('mouseleave', hideSearchIfEmpty, { passive: true });
+            }
+            
+            // Filter buttons dengan passive listener
             const filterBtns = document.querySelectorAll('.filter-btn');
             filterBtns.forEach(btn => {
                 btn.addEventListener('click', function() {
                     const category = this.getAttribute('data-category');
                     filterProducts(category);
-                });
+                }, { passive: true });
             });
             
             // Mega menu toggle button
@@ -1994,11 +1975,10 @@
                         if (iconX && kategoriLabel) {
                             iconX.classList.remove('hidden');
                             kategoriLabel.textContent = parsed.label;
-                            console.log('✅ FINAL CHECK: X shown, label updated to:', parsed.label);
                         }
                     }
                 } catch (e) {
-                    console.warn('Final check failed:', e);
+                    // Silent fail for production
                 }
             }
         });
@@ -2008,10 +1988,10 @@
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('sw.js')
                     .then(registration => {
-                        console.log('SW registered:', registration);
+                        // SW registered successfully
                     })
                     .catch(error => {
-                        console.log('SW registration failed:', error);
+                        // SW registration failed - silent for production
                     });
             });
         }
@@ -2035,14 +2015,14 @@
     
     <!-- Scroll Position Restoration for Footer Links -->
     <script>
-        // Save scroll position when clicking footer links
+        // Save scroll position when clicking footer links - dengan passive listener
         document.addEventListener('click', function(e) {
             const footerLink = e.target.closest('a[href="/cara-pemesanan.html"], a[href="/pengiriman.html"], a[href="/garansi.html"], a[href="/tentang-kami.html"]');
             if (footerLink) {
                 sessionStorage.setItem('footerScrollPosition', window.scrollY);
                 sessionStorage.setItem('fromFooterLink', 'true');
             }
-        });
+        }, { passive: true });
         
         // Restore scroll position when returning from footer pages
         window.addEventListener('pageshow', function(e) {
