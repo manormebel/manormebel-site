@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detail Produk - Manor Mebel</title>
+    
+    <!-- Preconnect to CDNs -->
+    <!-- Tailwind CDN removed - using local CSS -->
+    <!-- Lucide CDN removed - using local JS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <!-- Tailwind CSS with Local Fallback -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="./css/tailwind-local.css">
+    <link rel="stylesheet" href="./css/tailwind-local.css">
+    
+    <!-- Cache Busting Version -->
+    <script>
+        // Generate version for cache busting (change this when updating files)
+        window.CACHE_VERSION = 'v1.0.0';
+        
+        // Function to add version query to CSS and JS files
+        function addCacheBusting() {
+            const links = document.querySelectorAll('link[rel="stylesheet"]');
+            const scripts = document.querySelectorAll('script[src]');
+            
+            links.forEach(link => {
+                if (link.href && !link.href.includes('?v=') && !link.href.includes('fonts.googleapis')) {
+                    link.href = link.href + '?v=' + window.CACHE_VERSION;
+                }
+            });
+            
+            scripts.forEach(script => {
+                if (script.src && !script.src.includes('?v=') && !script.src.includes('cdn.tailwindcss')) {
+                    script.src = script.src + '?v=' + window.CACHE_VERSION;
+                }
+            });
+        }
+        
+        // Apply cache busting on DOM ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', addCacheBusting);
+        } else {
+            addCacheBusting();
+        }
+    </script>
+    
+    <!-- Tailwind Fallback Script -->
+    <script>
+        // Check if Tailwind loaded successfully
+        window.addEventListener('load', function() {
+            if (typeof tailwind === 'undefined') {
+                console.warn('Tailwind CDN failed to load, using local CSS only');
+                // Add fallback classes for critical elements
+                document.documentElement.classList.add('tailwind-fallback');
+            }
+        });
+        
+        // Set timeout for fallback
+        setTimeout(function() {
+            if (typeof tailwind === 'undefined') {
+                console.warn('Tailwind CDN timeout, using local CSS');
+                document.documentElement.classList.add('tailwind-fallback');
+            }
+        }, 3000);
+    </script>
+    
+    <!-- Local Utilities - Load before other scripts -->
+    <script src="./js/utils.js"></script>
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Merriweather:ital,wght@0,300;0,400;0,700;1,400&family=UnifrakturMaguntia&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind Config - Local -->
+    <script>
+        if (typeof tailwind !== 'undefined') {
+            tailwind.config = {
+                darkMode: 'media',
+                theme: {
+                    extend: {
+                        colors: {
+                            'wood-light': '#E5D3B3',
+                            'wood-medium': '#D4A373',
+                            'wood-dark': '#966F4A',
+                        },
+                        fontFamily: {
+                            sans: ['Inter', 'sans-serif'],
+                            serif: ['Merriweather', 'serif'],
+                            gothic: ['UnifrakturMaguntia', 'cursive'],
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-stone-100 dark:bg-stone-900 text-stone-900 dark:text-stone-100 font-sans antialiased">
+
+    <!-- Navbar -->
+    <nav class="bg-stone-200 dark:bg-stone-900 shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex-shrink-0 flex items-center">
+                    <a href="./index.html" id="home-link" class="flex items-center gap-0 cursor-pointer">
+                        <!-- Icon MM Style -->
+                        <img src="/images/logo/logo.png" alt="Manor Mebel Logo" class="h-16 w-auto object-contain brightness-0 invert" decoding="async" fetchpriority="high">
+                        <!-- Text Image -->
+                        <img src="/images/logo/text.png" alt="Manor Mebel Text" class="h-14 md:h-16 w-auto object-contain mt-1 -ml-8 md:-ml-10 brightness-0 invert" decoding="async" fetchpriority="high">
+                    </a>
+                </div>
+                
+                <div class="flex items-center space-x-4 relative">
+                    <a href="./index.html" id="back-link" class="text-stone-500 dark:text-stone-400 hover:text-wood-dark dark:hover:text-wood-light transition-colors flex items-center gap-2">
+                        <span class="text-sm font-medium">Kembali</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <div id="about-overlay" class="fixed inset-0 z-[60] hidden">
+        <div class="absolute inset-0 bg-stone-900/80 backdrop-blur-sm" data-action="close-about"></div>
+        <div class="relative max-w-3xl mx-auto bg-white dark:bg-stone-800 rounded-lg shadow-xl text-stone-900 dark:text-stone-100 my-10 p-6 sm:p-8 overflow-y-auto max-h-[80vh]">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-2xl sm:text-3xl font-serif font-bold">Tentang Kami</h2>
+                <button data-action="close-about" class="text-stone-500 hover:text-stone-700 dark:text-stone-400 dark:hover:text-stone-200 transition-colors">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+            <div class="space-y-4 text-base sm:text-lg leading-relaxed">
+                <p>Manor Mebel adalah usaha furniture yang berlokasi di Jepara, Jawa Tengah, dan telah beroperasi secara offline sejak tahun 2001. Dengan pengalaman lebih dari dua dekade, kami tumbuh sebagai penyedia furniture yang mengutamakan kualitas, ketelitian pengerjaan, serta kepercayaan pelanggan.</p>
+                <p>Jepara dikenal sebagai kota ukir dan pusat industri mebel di Indonesia. Berbekal keahlian pengrajin lokal yang berpengalaman serta pemilihan material berkualitas, Manor Mebel menghadirkan produk furniture yang kuat, fungsional, dan memiliki nilai estetika tinggi.</p>
+                <p>Mengikuti perkembangan zaman, pada tahun 2025 Manor Mebel hadir secara online untuk menjangkau pelanggan di seluruh Indonesia. Melalui layanan digital, kami memberikan kemudahan dalam memilih produk, melakukan pemesanan, hingga pengiriman langsung ke lokasi pelanggan.</p>
+                <p>Selain produk jadi, Manor Mebel juga melayani pembuatan furniture custom design sesuai kebutuhan, ukuran, dan konsep yang diinginkan pelanggan. Mulai dari desain klasik hingga modern, kami siap membantu mewujudkan furniture yang sesuai dengan karakter ruang Anda.</p>
+                <p>Setiap produk Manor Mebel dikerjakan dengan standar kualitas tinggi dan melalui proses kontrol yang teliti untuk memastikan hasil yang maksimal. Dengan pengalaman sejak 2001 dan inovasi di era digital, Manor Mebel berkomitmen menjadi mitra terpercaya dalam menghadirkan furniture yang nyaman, tahan lama, dan bernilai jangka panjang.</p>
+            </div>
+        </div>
+    </div>
+    <div id="warranty-overlay" class="fixed inset-0 z-[60] hidden">
+        <div class="absolute inset-0 bg-stone-900/80 backdrop-blur-sm" data-action="close-warranty"></div>
+        <div class="relative max-w-3xl mx-auto bg-white dark:bg-stone-800 rounded-lg shadow-xl text-stone-900 dark:text-stone-100 my-10 p-6 sm:p-8 overflow-y-auto max-h-[80vh]">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-2xl sm:text-3xl font-serif font-bold">Garansi</h2>
+                <button data-action="close-warranty" class="text-stone-500 hover:text-stone-700 dark:text-stone-400 dark:hover:text-stone-200 transition-colors">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+            <div class="space-y-6 text-base sm:text-lg leading-relaxed">
+                <div>
+                    <p class="font-semibold">Barang Rusak / Lecet saat diterima</p>
+                    <ol class="mt-2 list-decimal pl-5 space-y-2">
+                        <li>Klaim hanya diterima selama sopir pengantar masih di lokasi penerimaan.</li>
+                        <li>Tanggung jawab penuh berada pada pihak kargo / ekspedisi.</li>
+                    </ol>
+                </div>
+                <div>
+                    <p class="font-semibold">Lecet Ringan</p>
+                    <ol class="mt-2 list-decimal pl-5 space-y-2">
+                        <li>Kami akan mengirim bahan finishing dengan warna yang sama melalui paket.</li>
+                        <li>Pemesan dapat langsung memperbaiki lecet ringan menggunakan bahan tersebut.</li>
+                    </ol>
+                </div>
+                <div>
+                    <p class="font-semibold">Kerusakan Berat</p>
+                    <ol class="mt-2 list-decimal pl-5 space-y-2">
+                        <li>Untuk kerusakan berat, barang akan diretur terlebih dahulu.</li>
+                        <li>Barang akan kami lakukan servis / perbaikan total sesuai prosedur.</li>
+                        <li>Apabila barang tidak memungkinkan untuk diperbaiki, maka akan kami ganti dengan yang baru.</li>
+                    </ol>
+                </div>
+                <div>
+                    <p class="font-semibold">Catatan Penting</p>
+                    <ol class="mt-2 list-decimal pl-5 space-y-2">
+                        <li>Pastikan melakukan pengecekan saat barang diterima.</li>
+                        <li>Foto kondisi barang sebelum sopir meninggalkan lokasi dapat mempercepat proses klaim.</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="shipping-overlay" class="fixed inset-0 z-[60] hidden">
+        <div class="absolute inset-0 bg-stone-900/80 backdrop-blur-sm" data-action="close-shipping"></div>
+        <div class="relative max-w-3xl mx-auto bg-white dark:bg-stone-800 rounded-lg shadow-xl text-stone-900 dark:text-stone-100 my-10 p-6 sm:p-8 overflow-y-auto max-h-[80vh]">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-2xl sm:text-3xl font-serif font-bold">Pengiriman</h2>
+                <button data-action="close-shipping" class="text-stone-500 hover:text-stone-700 dark:text-stone-400 dark:hover:text-stone-200 transition-colors">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+            <div class="text-base sm:text-lg leading-relaxed">
+                <p class="font-semibold">(Pengiriman)</p>
+                <ol class="mt-2 list-decimal pl-5 space-y-2">
+                    <li>Pengiriman menggunakan jasa ekspedisi / kargo lokal sesuai kesepakatan bersama.</li>
+                    <li>Biaya pengiriman sepenuhnya menjadi tanggung jawab pembeli.</li>
+                    <li>Jadwal keberangkatan pengiriman menyesuaikan pihak ekspedisi.</li>
+                    <li>Nomor kontak sopir / pihak ekspedisi akan kami informasikan untuk keperluan tracking.</li>
+                    <li>Pembeli dapat memantau langsung posisi barang melalui sopir / ekspedisi.</li>
+                    <li>Pastikan penerima dapat dihubungi saat barang tiba di alamat tujuan.</li>
+                    <li>Segala bentuk kerusakan selama proses pengiriman menjadi tanggung jawab pihak ekspedisi sesuai ketentuan yang berlaku.</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lightbox Modal -->
+    <div id="lightbox" class="fixed inset-0 z-[70] hidden bg-black/95 touch-none">
+        <!-- Close Button -->
+        <button data-action="close-lightbox" class="absolute top-4 right-4 text-white hover:text-gray-300 z-[80] p-4 bg-black/50 rounded-full transition-transform active:scale-95">
+            <i data-lucide="x" class="w-8 h-8"></i>
+        </button>
+        
+        <!-- Prev Button -->
+        <button id="lightbox-prev" data-action="lightbox-prev" class="absolute left-4 top-1/2 -translate-y-1/2 text-white hover:text-gray-300 z-[80] p-4 bg-black/50 rounded-full hidden transition-transform active:scale-95">
+            <i data-lucide="chevron-left" class="w-10 h-10"></i>
+        </button>
+        
+        <!-- Next Button -->
+        <button id="lightbox-next" data-action="lightbox-next" class="absolute right-4 top-1/2 -translate-y-1/2 text-white hover:text-gray-300 z-[80] p-4 bg-black/50 rounded-full hidden transition-transform active:scale-95">
+            <i data-lucide="chevron-right" class="w-10 h-10"></i>
+        </button>
+
+        <!-- Main Image Container -->
+        <div class="absolute inset-0 flex items-center justify-center overflow-hidden w-full h-full" id="lightbox-container">
+            <img id="lightbox-img" src="" alt="Full Display" class="max-w-full max-h-full object-contain transition-transform duration-300 cursor-zoom-in select-none" data-action="toggle-zoom" draggable="false">
+        </div>
+        
+        <!-- Image Counter -->
+        <div class="absolute bottom-8 left-0 right-0 text-center text-white/90 text-base font-medium z-[80]">
+            <span id="lightbox-counter"></span>
+        </div>
+        
+        <!-- Zoom Hint -->
+        <div class="absolute bottom-4 left-0 right-0 text-center text-white/50 text-xs">
+            <span>Klik gambar untuk zoom &bull; Geser untuk ganti gambar</span>
+        </div>
+    </div>
+
+    <!-- Product Detail Section -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div id="product-detail-container" class="bg-white dark:bg-stone-800 rounded-lg shadow-sm border border-stone-100 dark:border-stone-700 overflow-hidden min-h-[400px]">
+            <!-- Content will be loaded here -->
+            <div class="flex items-center justify-center h-96">
+                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-wood-dark dark:border-wood-light"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-stone-900 text-stone-300 mt-12 border-t border-stone-800 dark:border-stone-700">
+        <div class="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
+                <div class="flex flex-col items-center">
+                    <div class="flex items-center justify-center gap-0 mb-6">
+                         <img src="/images/logo/logo.png" alt="Manor Mebel Logo" class="h-16 w-auto object-contain brightness-0 invert">
+                         <img src="/images/logo/text.png" alt="Manor Mebel Text" class="h-14 md:h-16 w-auto object-contain mt-1 -ml-8 md:-ml-10 brightness-0 invert">
+                    </div>
+                    <p class="text-sm text-stone-400 leading-relaxed max-w-sm">
+                        Hadirkan kenyamanan dan estetika premium untuk hunian impian Anda. Desain elegan, kualitas terbaik
+                    </p>
+                </div>
+                <div class="flex flex-col items-center">
+                    <h3 class="text-xs font-bold text-white tracking-[0.2em] uppercase mb-6">Informasi</h3>
+                    <ul class="space-y-4">
+                        <li><a href="./cara-pemesanan.html" class="text-sm text-stone-400 hover:text-white transition-colors">Cara Pemesanan</a></li>
+                        <li><a href="./pengiriman.html" class="text-sm text-stone-400 hover:text-white transition-colors">Pengiriman</a></li>
+                        <li><a href="./garansi.html" class="text-sm text-stone-400 hover:text-white transition-colors">Garansi</a></li>
+                        <li><a href="./tentang-kami.html" class="text-sm text-stone-400 hover:text-white transition-colors">Tentang Kami</a></li>
+                    </ul>
+                </div>
+                <div class="flex flex-col items-center">
+                    <h3 class="text-xs font-bold text-white tracking-[0.2em] uppercase mb-6">Hubungi Kami</h3>
+                    <div class="space-y-4 flex flex-col items-center mb-4">
+                        <a href="mailto:manormebeljepara@gmail.com?subject=Tanya%20Produk%20Manor%20Mebel&body=Halo%20Manor%20Mebel,%20saya%20ingin%20bertanya%20tentang%20produk..." class="flex items-center gap-3 text-sm text-stone-400 hover:text-white transition-colors group">
+                            <i data-lucide="mail" class="w-4 h-4 text-stone-500 group-hover:text-white transition-colors"></i>
+                            <span class="tracking-wide">manormebeljepara@gmail.com</span>
+                        </a>
+                        <a href="whatsapp://send?phone=6281325393894&text=Halo%20Manor%20Mebel,%20saya%20tertarik%20dengan%20produk%20Anda" target="_self" class="flex items-center gap-3 text-sm text-stone-400 hover:text-white transition-colors group">
+                            <i data-lucide="message-circle" class="w-4 h-4 text-stone-500 group-hover:text-white transition-colors"></i>
+                            <span class="tracking-wide">+62 813-2539-3894</span>
+                        </a>
+                    </div>
+                    <p class="text-sm mb-2 text-stone-400">Jepara, Jawa Tengah</p>
+                    <p class="text-sm mb-4 text-stone-400">Indonesia</p>
+                </div>
+            </div>
+            
+            <div class="mt-16 pt-8 border-t border-stone-800 flex flex-col items-center">
+                <p class="text-xs font-bold text-white tracking-[0.2em] uppercase mb-6">Sosial Media</p>
+                <div class="flex justify-center space-x-8 mb-6">
+                    <a href="https://www.instagram.com/manormebel/" aria-label="Instagram" class="text-stone-500 hover:text-white transition-colors" target="_blank" rel="noopener">
+                        <i data-lucide="instagram" class="w-5 h-5"></i>
+                    </a>
+                    <a href="https://www.facebook.com/profile.php?id=61585164303421" aria-label="Facebook" class="text-stone-500 hover:text-white transition-colors" target="_blank" rel="noopener">
+                        <i data-lucide="facebook" class="w-5 h-5"></i>
+                    </a>
+                    <a href="https://x.com/Manormebel" aria-label="Twitter" class="text-stone-500 hover:text-white transition-colors" target="_blank" rel="noopener">
+                        <i data-lucide="twitter" class="w-5 h-5"></i>
+                    </a>
+                    <a href="https://www.tiktok.com/@manormebel" aria-label="TikTok" class="text-stone-500 hover:text-white transition-colors" target="_blank" rel="noopener">
+                        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5c0 2.5-2 2.5-2 2.5"></path>
+                        </svg>
+                    </a>
+                </div>
+                <p class="text-xs text-stone-500 tracking-wide">&copy;2026 Manor Mebel. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="./data.js"></script>
+    <script>
+        (function() {
+            const backLink = document.getElementById('back-link');
+            const homeLink = document.getElementById('home-link');
+            if (!backLink && !homeLink) return;
+
+            const handleBack = (e) => {
+                let isSameOriginReferrer = false;
+                try {
+                    isSameOriginReferrer = !!document.referrer && new URL(document.referrer).origin === window.location.origin;
+                } catch {}
+
+                if (isSameOriginReferrer && window.history.length > 1) {
+                    e.preventDefault();
+                    window.history.back();
+                    return;
+                }
+
+                if (e.currentTarget && e.currentTarget.setAttribute) {
+                    e.currentTarget.setAttribute('href', 'index.html#katalog');
+                }
+            };
+
+            if (backLink) backLink.addEventListener('click', handleBack);
+            if (homeLink) homeLink.addEventListener('click', handleBack);
+        })();
+
+        // Get Product ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const productId = parseInt(urlParams.get('id'));
+
+        // Find Product
+        const product = products.find(p => p.id === productId);
+
+        const container = document.getElementById('product-detail-container');
+
+        if (product) {
+            // Prepare images
+            let images = [];
+            if (product.images && product.images.length > 0) {
+                images = product.images.filter(img => img && img.trim() !== "");
+            }
+            if (images.length === 0 && product.image && product.image.trim() !== "") {
+                images = [product.image];
+            }
+            
+            // Generate Image Slider HTML
+            let imageSliderHtml = '';
+            let dotsHtml = '';
+            
+            // Generate Keyword Tags (Non-interactive)
+            const keywordTags = product.keywords && product.keywords.length > 0 
+                ? `<div class="flex flex-wrap gap-2 mt-6 justify-center pointer-events-none select-none">
+                    ${product.keywords.map(k => `<span class="text-xs font-medium text-stone-500 dark:text-stone-400 bg-stone-100 dark:bg-stone-700 px-3 py-1 rounded-full border border-stone-200 dark:border-stone-600">${k}</span>`).join('')}
+                   </div>`
+                : '';
+            
+            if (images.length === 0) {
+                 // No Image Placeholder
+                 imageSliderHtml = `
+                    <div class="w-full h-full flex items-center justify-center bg-stone-100 dark:bg-stone-700 text-stone-300 dark:text-stone-500">
+                        <i data-lucide="image" class="w-20 h-20"></i>
+                    </div>
+                `;
+            } else if (images.length > 1) {
+                // Multiple images - Slider
+                let slides = images.map((img, index) => `
+                    <div class="slider-image absolute inset-0 w-full h-full flex items-center justify-center bg-stone-100 dark:bg-stone-700 transition-opacity duration-1000 cursor-pointer ${index === 0 ? 'opacity-100 z-10' : 'opacity-0 z-0'}"
+                         data-action="open-lightbox" data-index="${index}">
+                         <img src="${img}" alt="${product.name} - View ${index + 1}" class="max-w-full max-h-full object-contain" decoding="async" data-error="fallback-image">
+                    </div>
+                `).join('');
+
+                let dots = images.map((_, index) => `
+                    <button class="slider-dot w-2.5 h-2.5 rounded-full transition-all duration-300 ${index === 0 ? 'bg-stone-800 dark:bg-stone-200 scale-110' : 'bg-stone-400 dark:bg-stone-600 hover:bg-stone-600 dark:hover:bg-stone-400'}" 
+                            data-action="change-slide" data-index="${index}" aria-label="Go to slide ${index + 1}"></button>
+                `).join('');
+
+                imageSliderHtml = `
+                    <div class="relative h-full w-full group bg-stone-100 dark:bg-stone-700">
+                        ${slides}
+                        <div class="absolute bottom-4 left-0 right-0 flex justify-center space-x-2 z-20">
+                            ${dots}
+                        </div>
+                    </div>
+                `;
+            } else {
+                // Single image
+                imageSliderHtml = `
+                    <div class="w-full h-full flex items-center justify-center bg-stone-100 dark:bg-stone-700 cursor-pointer" data-action="open-lightbox" data-index="0">
+                        <img src="${images[0]}" alt="${product.name}" class="max-w-full max-h-full object-contain" decoding="async" fetchpriority="high" data-error="fallback-image">
+                    </div>
+                `;
+            }
+
+            // Share Function - INSTANT WhatsApp Redirect with Product Link
+            window.shareCurrentProduct = function() {
+                const message = `Halo Manor Mebel, saya tertarik dengan produk ini:\n\nNama Produk: ${product.name}\nKategori: ${product.category}\nLink Produk: https://manormebel.com/product.html?id=${product.id}`;
+                const waText = encodeURIComponent(message);
+                const waWeb = `https://wa.me/6281325393894?text=${waText}`;
+
+                // INSTANT redirect to WhatsApp Web (works on all devices)
+                window.location.href = waWeb;
+            };
+
+            container.innerHTML = `
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 p-6 md:p-12">
+                    <div class="flex flex-col">
+                    <div class="aspect-w-1 aspect-h-1 w-full overflow-hidden bg-stone-200 dark:bg-stone-700 rounded-lg relative h-80 sm:h-[400px] md:h-[500px] shadow-sm">
+                        ${imageSliderHtml}
+                    </div>
+                    ${keywordTags}
+                </div>
+                    <div class="flex flex-col justify-center">
+                        <span class="text-wood-dark dark:text-wood-light font-medium text-sm tracking-wider uppercase mb-2">${product.category}</span>
+                        <h1 class="text-3xl md:text-4xl font-serif font-bold text-black dark:text-stone-100 mb-4">${product.name}</h1>
+                        <p class="text-2xl font-medium text-black dark:text-stone-100 mb-6">${product.price}</p>
+                        
+                        <div class="prose prose-stone dark:prose-invert mb-8 text-stone-600 dark:text-stone-300">
+                            <p>${product.desc}</p>
+                            ${product.category === 'Request Design' ? '' : '<p class="mt-4">Produk ini dibuat dengan material berkualitas tinggi dan pengerjaan yang detail. Cocok untuk melengkapi interior rumah Anda dengan nuansa elegan dan alami.</p>'}
+                        </div>
+
+                        <div class="flex flex-col sm:flex-row gap-4">
+                            <button data-action="share-product" 
+                               class="inline-flex justify-center items-center px-6 py-3 border border-transparent text-base font-medium rounded-full shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors gap-2 cursor-pointer">
+                                <img src="/images/logo-wa/wa-logo.png" alt="WhatsApp" class="w-5 h-5 object-contain">
+                                Pesan Sekarang via WhatsApp
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Initialize Slider Script if multiple images
+            if (images.length > 1) {
+                let currentSlide = 0;
+                const totalSlides = images.length;
+                let slideInterval;
+
+                window.changeSlide = function(index) {
+                    // Reset interval on manual click
+                    clearInterval(slideInterval);
+                    startSlideShow();
+
+                    // Update Images
+                    const slides = document.querySelectorAll('.slider-image');
+                    slides.forEach((slide, i) => {
+                        if (i === index) {
+                            slide.classList.remove('opacity-0', 'z-0');
+                            slide.classList.add('opacity-100', 'z-10');
+                        } else {
+                            slide.classList.remove('opacity-100', 'z-10');
+                            slide.classList.add('opacity-0', 'z-0');
+                        }
+                    });
+
+                    // Update Dots
+                    const dots = document.querySelectorAll('.slider-dot');
+                    dots.forEach((dot, i) => {
+                        if (i === index) {
+                            dot.className = 'slider-dot w-2.5 h-2.5 rounded-full transition-all duration-300 bg-stone-800 scale-110';
+                        } else {
+                            dot.className = 'slider-dot w-2.5 h-2.5 rounded-full transition-all duration-300 bg-stone-400 hover:bg-stone-600';
+                        }
+                    });
+
+                    currentSlide = index;
+                };
+
+                function nextSlide() {
+                    let next = (currentSlide + 1) % totalSlides;
+                    changeSlide(next);
+                }
+
+                function startSlideShow() {
+                    slideInterval = setInterval(nextSlide, 3000);
+                }
+
+                // Start auto slide
+                startSlideShow();
+            }
+
+        } else {
+            container.innerHTML = `
+                <div class="text-center py-20">
+                    <h2 class="text-2xl font-serif font-bold text-black mb-4">Produk Tidak Ditemukan</h2>
+                    <p class="text-stone-500 mb-8">Maaf, produk yang Anda cari tidak tersedia.</p>
+                    <a href="./index.html" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-full text-wood-dark bg-wood-light/20 hover:bg-wood-light/30 transition-colors">
+                        Kembali ke Katalog
+                    </a>
+                </div>
+            `;
+        }
+
+
+
+        // Lightbox Logic
+        let currentLightboxIndex = 0;
+        let lightboxImages = [];
+        let isZoomed = false;
+
+        function openLightbox(index) {
+            if (!product) return;
+            lightboxImages = (product.images && product.images.length > 0) ? product.images : [product.image];
+            currentLightboxIndex = index;
+            updateLightboxImage();
+            
+            const lightbox = document.getElementById('lightbox');
+            lightbox.classList.remove('hidden');
+            document.body.classList.add('overflow-hidden');
+            lucide.createIcons();
+        }
+
+        function closeLightbox() {
+            const lightbox = document.getElementById('lightbox');
+            lightbox.classList.add('hidden');
+            document.body.classList.remove('overflow-hidden');
+            resetZoom();
+        }
+
+        function updateLightboxImage() {
+            const img = document.getElementById('lightbox-img');
+            const counter = document.getElementById('lightbox-counter');
+            const prevBtn = document.getElementById('lightbox-prev');
+            const nextBtn = document.getElementById('lightbox-next');
+            
+            img.src = lightboxImages[currentLightboxIndex];
+            counter.textContent = `${currentLightboxIndex + 1} / ${lightboxImages.length}`;
+            
+            if (lightboxImages.length > 1) {
+                prevBtn.classList.remove('hidden');
+                nextBtn.classList.remove('hidden');
+            } else {
+                prevBtn.classList.add('hidden');
+                nextBtn.classList.add('hidden');
+            }
+            
+            resetZoom();
+        }
+
+        function changeLightboxSlide(step) {
+            currentLightboxIndex = (currentLightboxIndex + step + lightboxImages.length) % lightboxImages.length;
+            updateLightboxImage();
+        }
+
+        function toggleZoom() {
+            const img = document.getElementById('lightbox-img');
+            if (isZoomed) {
+                img.style.transform = 'scale(1)';
+                img.classList.remove('cursor-zoom-out');
+                img.classList.add('cursor-zoom-in');
+                isZoomed = false;
+            } else {
+                img.style.transform = 'scale(2.5)';
+                img.classList.remove('cursor-zoom-in');
+                img.classList.add('cursor-zoom-out');
+                isZoomed = true;
+            }
+        }
+
+        function resetZoom() {
+            const img = document.getElementById('lightbox-img');
+            img.style.transform = 'scale(1)';
+            img.classList.remove('cursor-zoom-out');
+            img.classList.add('cursor-zoom-in');
+            isZoomed = false;
+        }
+
+        // Swipe support for mobile
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        document.getElementById('lightbox').addEventListener('touchstart', e => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, {passive: true});
+
+        document.getElementById('lightbox').addEventListener('touchend', e => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        }, {passive: true});
+
+        function handleSwipe() {
+            if (isZoomed) return; // Disable swipe when zoomed
+            if (touchEndX < touchStartX - 50) changeLightboxSlide(1);
+            if (touchEndX > touchStartX + 50) changeLightboxSlide(-1);
+        }
+
+        // Keyboard support
+        document.addEventListener('keydown', function(e) {
+            if (document.getElementById('lightbox').classList.contains('hidden')) return;
+            
+            if (e.key === 'Escape') closeLightbox();
+            if (e.key === 'ArrowLeft') changeLightboxSlide(-1);
+            if (e.key === 'ArrowRight') changeLightboxSlide(1);
+        });
+
+        lucide.createIcons();
+
+        // Error handling for images
+        document.addEventListener('error', function(e) {
+            if (e.target.dataset.error === 'fallback-image') {
+                e.target.src = '/images/logo/logo.png';
+            }
+        }, true);
+
+        // Event Delegation for data-action attributes
+        document.addEventListener('click', function(e) {
+            const action = e.target.closest('[data-action]')?.dataset.action;
+            if (!action) return;
+            
+            switch(action) {
+                case 'close-about':
+                    e.preventDefault();
+                    closeAbout();
+                    break;
+                case 'close-warranty':
+                    e.preventDefault();
+                    closeWarranty();
+                    break;
+                case 'close-shipping':
+                    e.preventDefault();
+                    closeShipping();
+                    break;
+                case 'close-lightbox':
+                    e.preventDefault();
+                    closeLightbox();
+                    break;
+                case 'lightbox-prev':
+                    e.preventDefault();
+                    changeLightboxSlide(-1);
+                    break;
+                case 'lightbox-next':
+                    e.preventDefault();
+                    changeLightboxSlide(1);
+                    break;
+                case 'toggle-zoom':
+                    e.preventDefault();
+                    toggleZoom();
+                    break;
+                case 'open-lightbox':
+                    e.preventDefault();
+                    const index = parseInt(e.target.closest('[data-index]').dataset.index);
+                    openLightbox(index);
+                    break;
+                case 'change-slide':
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const slideIndex = parseInt(e.target.dataset.index);
+                    changeSlide(slideIndex);
+                    break;
+                case 'share-product':
+                    e.preventDefault();
+                    shareCurrentProduct();
+                    break;
+            }
+        });
+
+        // Register Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js');
+            });
+        }
+    </script>
+</body>
+</html>
