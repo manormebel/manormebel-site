@@ -1,0 +1,13 @@
+{
+  "name": "manor-mebel",
+  "version": "1.0.0",
+  "description": "Manor Mebel - Toko Furniture & Mebel Minimalis Modern",
+  "main": "index.html",
+  "scripts": {
+    "build": "echo 'Static site - no build needed'",
+    "deploy": "echo 'Deploy to Cloudflare Pages'"
+  },
+  "keywords": ["furniture", "mebel", "jepara", "indonesia"],
+  "author": "Manor Mebel",
+  "license": "MIT"
+}

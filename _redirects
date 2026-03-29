@@ -1,0 +1,17 @@
+# Handle file assets dulu - jangan diarahkan ke index.html
+/assets/* /assets/:splat 200
+/images/* /images/:splat 200
+/css/* /css/:splat 200  
+/js/* /js/:splat 200
+
+# Handle HTML files secara spesifik - URUTAN PENTING!
+/cara-pemesanan.html /cara-pemesanan.html 200
+/pengiriman.html /pengiriman.html 200
+/garansi.html /garansi.html 200
+/tentang-kami.html /tentang-kami.html 200
+
+# Handle root domain - redirect ke index.html
+/ /index.html 200
+
+# Handle 404 untuk file yang benar-benar tidak ada
+/404.html /404.html 200
